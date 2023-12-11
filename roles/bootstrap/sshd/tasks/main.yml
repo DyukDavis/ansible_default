@@ -1,0 +1,23 @@
+---
+
+- name: Copy sshd config
+  ansible.builtin.template:
+    src: sshd_config.j2
+    dest: /etc/ssh/sshd_config
+    owner: root
+    group: root
+    mode: '0644'
+  notify:
+    - restart sshd service
+
+- name: Disable motd message one
+  ansible.builtin.lineinfile:
+    path: /etc/pam.d/sshd
+    regexp: '^session\s+optional\s+pam_motd.so\s+motd=\/run\/motd\.dynamic$'
+    line: "#session    optional     pam_motd.so  motd=/run/motd.dynamic"
+
+- name: Disable motd message two
+  ansible.builtin.lineinfile:
+    path: /etc/pam.d/sshd
+    regexp: '^session\s+optional\s+pam_motd.so\s+pam_motd.so\s+noupdate$'
+    line: "#session    optional     pam_motd.so noupdate"

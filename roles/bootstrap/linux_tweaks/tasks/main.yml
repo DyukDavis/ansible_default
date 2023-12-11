@@ -1,0 +1,42 @@
+---
+
+- name: Setup custom shell prompt
+  ansible.builtin.template:
+    src: 02-prompt.sh.j2
+    dest: /etc/profile.d/02-prompt.sh
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Copy sudo config
+  ansible.builtin.template:
+    src: sudo-prompt.j2
+    dest: /etc/sudoers.d/prompt
+    owner: root
+    group: root
+    mode: 0440
+
+- name: Copy cgroup check script
+  ansible.builtin.copy:
+    src: cgroup_check.sh
+    dest: /usr/local/bin/cgroup_check.sh
+    mode: 0755
+
+- name: Copy cgroup check units
+  ansible.builtin.template:
+    src: "{{ item }}.j2"
+    dest: "/etc/systemd/system/{{ item }}"
+    owner: root
+    group: root
+    mode: 0644
+  with_items:
+    - "cgroup-leak-workaround.service"
+    - "cgroup-leak-workaround.timer"
+  notify: Reload systemd
+
+- name: Enable unit
+  ansible.builtin.systemd:
+    state: started
+    name: cgroup-leak-workaround.timer
+    daemon_reload: true
+    enabled: true

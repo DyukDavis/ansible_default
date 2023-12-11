@@ -1,0 +1,29 @@
+---
+
+- name: Read file
+  ansible.builtin.slurp:
+    src: "{{ file.path }}"
+  register: config_data
+
+- name: Parse config
+  ansible.builtin.set_fact:
+    config: "{{ config_data.content | b64decode | from_yaml }}"
+
+- name: Update config
+  ansible.builtin.set_fact:
+    config: "{{ config | \
+      combine({'network': {'ethernets': {item: {'nameservers': {'addresses': network_dns_servers }}}}}, \
+      recursive=true) }}"
+  when: "'nameservers' in config['network']['ethernets'][item]"
+  with_items:
+    - "{{ config['network']['ethernets'].keys() }}"
+
+- name: Write config
+  ansible.builtin.copy:
+    content: "{{ config | to_yaml }}"
+    dest: "{{ file.path }}"
+    backup: true
+    mode: 0644
+  notify:
+    - Generating Netplan
+    - Apply Netplan

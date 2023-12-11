@@ -1,0 +1,10 @@
+---
+- name: Prepare
+  hosts: all
+  become: true
+  tasks:
+
+    - name: Install python lxml
+      ansible.builtin.apt:
+        name: python3-lxml
+        update_cache: true

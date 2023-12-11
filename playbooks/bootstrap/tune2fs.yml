@@ -1,0 +1,18 @@
+---
+
+- name: Tune2fs
+  hosts: all
+  gather_facts: true
+  become: true
+  tasks:
+    - name: Disable reserved space
+      ansible.builtin.command:
+        argv:
+          - "/sbin/tune2fs"
+          - "-m"
+          - "0"
+          - "{{ item.device }}"
+      when:
+        - item.fstype == 'ext4'
+      with_items:
+        - "{{ ansible_mounts }}"

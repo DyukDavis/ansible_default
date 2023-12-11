@@ -1,0 +1,48 @@
+{% for port in sshd_ports %}
+Port {{ port }}
+{% endfor %}
+
+#AddressFamily any
+ListenAddress {{ sshd_listen_ipv4 }}
+ListenAddress {{ sshd_listen_ipv6 }}
+
+# Logging
+SyslogFacility AUTH
+LogLevel {{ sshd_loglevel }}
+
+# Authentication:
+LoginGraceTime {{ sshd_logingracetime }}
+PermitRootLogin {{ sshd_permitrootlogin }}
+StrictModes {{ sshd_strictmodes }}
+MaxAuthTries 6
+MaxSessions 200
+
+# https://stackoverflow.com/questions/4812134/in-sshd-configuration-what-does-maxstartups-103060-mean
+MaxStartups 150:50:200
+
+PubkeyAuthentication {{ sshd_pubkeyauthentication }}
+
+PasswordAuthentication {{ sshd_passwordauthentication }}
+PermitEmptyPasswords no
+
+X11Forwarding yes
+PrintMotd no
+
+AcceptEnv LANG LC_*
+
+Subsystem	sftp	/usr/lib/openssh/sftp-server
+
+UseDNS no
+GSSAPIAuthentication yes
+UsePAM yes
+ChallengeResponseAuthentication yes
+KerberosAuthentication no
+AuthorizedKeysCommand /usr/bin/sss_ssh_authorizedkeys
+AuthorizedKeysCommandUser nobody
+
+
+
+# Extra options
+{% for opt in sshd_extra_options %}
+{{ opt }}
+{% endfor %}

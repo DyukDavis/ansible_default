@@ -1,0 +1,21 @@
+---
+
+- name: Install fusion agent urls
+  ansible.builtin.apt:
+    deb: "{{ item }}"
+  with_items:
+    - "{{ fusioninventory_packages_url }}"
+  when: ansible_distribution_version is version('20.04', '<=')
+
+- name: Install fusion agent distro
+  ansible.builtin.apt:
+    name: "{{ fusioninventory_packages_distro }}"
+  when: ansible_distribution_version is version('20.04', '>')
+
+- name: Copy config file
+  ansible.builtin.template:
+    src: agent.cfg.j2
+    dest: "/etc/fusioninventory/agent.cfg"
+    owner: "root"
+    group: "root"
+  notify: restart fusioninventory service

@@ -1,0 +1,84 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: vagrant
+  provider:
+    name: libvirt
+platforms:
+  - name: ubuntu2004
+    instance_raw_config_args:
+      - 'vm.network :private_network,
+                    :ip => "192.168.30.11",
+                    :libvirt__network_name => "test-cluster",
+                    :libvirt__dhcp_enabled => false'
+    interfaces:
+      - auto_config: true
+        network_name: private_network
+        type: dhcp
+    box: generic/ubuntu2004
+    box_version: 4.2.16
+    memory: 1024
+    cpus: 1
+    provider_raw_config_args:
+      - "disk_driver :cache => 'unsafe'"
+      - "disk_bus = 'virtio'"
+      - "random_hostname = true"
+      - "cpu_mode = 'host-passthrough'"
+      - "driver = 'kvm'"
+
+  - name: ubuntu2204
+    instance_raw_config_args:
+      - 'vm.network :private_network,
+                    :ip => "192.168.30.12",
+                    :libvirt__network_name => "test-cluster",
+                    :libvirt__dhcp_enabled => false'
+    interfaces:
+      - auto_config: true
+        network_name: private_network
+        type: dhcp
+    box: generic/ubuntu2204
+    box_version: 4.2.16
+    memory: 1024
+    cpus: 1
+    provider_raw_config_args:
+      - "disk_driver :cache => 'unsafe'"
+      - "disk_bus = 'virtio'"
+      - "random_hostname = true"
+      - "cpu_mode = 'host-passthrough'"
+      - "driver = 'kvm'"
+  - name: debian11
+    instance_raw_config_args:
+      - 'vm.network :private_network,
+                    :ip => "192.168.30.12",
+                    :libvirt__network_name => "test-cluster",
+                    :libvirt__dhcp_enabled => false'
+    interfaces:
+      - auto_config: true
+        network_name: private_network
+        type: dhcp
+    box: generic/debian11
+    box_version: 4.2.16
+    memory: 1024
+    cpus: 1
+    provider_raw_config_args:
+      - "disk_driver :cache => 'unsafe'"
+      - "disk_bus = 'virtio'"
+      - "random_hostname = true"
+      - "cpu_mode = 'host-passthrough'"
+      - "driver = 'kvm'"
+provisioner:
+  name: ansible
+  config_options:
+    defaults:
+      interpreter_python: auto_silent
+      callbacks_enabled: profile_tasks, timer, yaml
+      stdout_callback: yaml
+      bin_ansible_callbacks: true
+    ssh_connection:
+      pipelining: false
+verifier:
+  name: testinfra
+  options:
+    sudo: true
+    vvv: true

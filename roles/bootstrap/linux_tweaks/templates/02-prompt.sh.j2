@@ -1,0 +1,24 @@
+# If not running interactively, don't do anything
+[ -z "$PS1" ] && return
+
+case "$TERM" in
+    xterm-color) color_prompt=yes;;
+    xterm-256color) color_prompt=yes;;
+    xterm) color_prompt=yes;;
+esac
+
+echo -ne "\033]0;$(hostname -s)\007"
+
+if [ "$color_prompt" = yes ]; then
+
+{% if linux_tweaks_env == 'prod' %}
+    export PROMPT_COMMAND='export PS1="{{ _color_background_red    }}{{ _color_font_black }}[\u@\h \A]:\w\${{ _color_reset }} "'
+{% elif linux_tweaks_env == 'stage' %}
+    export PROMPT_COMMAND='export PS1="{{ _color_background_yellow }}{{ _color_font_black }}[\u@\h \A]:\w\${{ _color_reset }} "'
+{% else %}
+    export PROMPT_COMMAND='export PS1="{{ _color_background_blue   }}{{ _color_font_black }}[\u@\h \A]:\w\${{ _color_reset }} "'
+{% endif %}
+
+else
+    export PROMPT_COMMAND='export PS1="[\u@\h \A]:\w\$ "'
+fi

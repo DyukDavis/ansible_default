@@ -1,0 +1,7 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Include bootstrap.snoopy"
+      ansible.builtin.include_role:
+        name: "bootstrap.snoopy"

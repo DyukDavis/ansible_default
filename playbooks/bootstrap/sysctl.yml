@@ -1,0 +1,8 @@
+---
+
+- name: Setup sysctl main
+  hosts: linux
+  gather_facts: true
+  become: true
+  roles:
+    - role: bootstrap/sysctl

@@ -1,0 +1,33 @@
+---
+- name: Update grub KV config
+  ansible.builtin.lineinfile:
+    state: "{{ item.state }}"
+    dest: /etc/default/grub
+    backrefs: true
+    regexp: '^(GRUB_CMDLINE_LINUX=(?!.* {{ item.key }})\"[^\"]*)(\".*)'
+    line: '\1 {{ item.key }}={{ item.value }}\2'
+  with_items:
+    - "{{grub_options_kv}}"
+  notify: Gen grub config
+
+- name: Update grub keys config
+  ansible.builtin.lineinfile:
+    state: "{{ item.state }}"
+    dest: /etc/default/grub
+    backrefs: true
+    regexp: '^(GRUB_CMDLINE_LINUX=(?!.* {{ item.key }})\"[^\"]*)(\".*)'
+    line: '\1 {{ item.key }}\2'
+  with_items:
+    - "{{grub_options_keys}}"
+  notify: Gen grub config
+
+
+- name: Setup multiple ESP update support
+  ansible.builtin.copy:
+    src: 99-copy-efi2
+    dest: /etc/grub.d/99-copy-efi2
+    mode: 0755
+    owner: root
+    group: root
+  notify:
+    - Copy esp

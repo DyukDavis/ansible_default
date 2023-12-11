@@ -1,0 +1,9 @@
+---
+
+podman_repo_key_info:
+  url: 'http://download.opensuse.org/repositories/devel:kubic:libcontainers:/{{ podman_repo_status }}/xUbuntu_{{ ansible_distribution_version }}/Release.key'
+  dest: /usr/share/keyrings/podman.gpg
+
+podman_apt_repository: >
+  deb [signed-by=/usr/share/keyrings/podman.gpg]
+  http://download.opensuse.org/repositories/devel:kubic:libcontainers:/{{ podman_repo_status }}/xUbuntu_{{ ansible_distribution_version }}/ /

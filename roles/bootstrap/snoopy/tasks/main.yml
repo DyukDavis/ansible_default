@@ -1,0 +1,118 @@
+---
+- name: Add apt repo
+  block:
+    - name: Add apt key
+      ansible.builtin.get_url:
+        url: https://a2o.github.io/snoopy-packages/snoopy-packages-key.pub
+        dest: /etc/apt/trusted.gpg.d/snoopy.asc
+        mode: 0644
+
+    - name: Rm old apt source
+      ansible.builtin.file:
+        path: /etc/apt/sources.list.d/a2o_github_io_snoopy_packages_repo_ubuntu.list
+        state: absent
+
+    - name: Add apt repo
+      ansible.builtin.apt_repository:
+        repo: >
+          deb [arch=amd64 signed-by=/etc/apt/trusted.gpg.d/snoopy.asc]
+          https://a2o.github.io/snoopy-packages/repo/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} stable
+        filename: snoopy
+        state: present
+
+- name: Intall snoopy
+  ansible.builtin.apt:
+    name:
+      - snoopy
+      - rsyslog
+    state: present
+    update_cache: true
+
+- name: Edit snoopy config
+  ansible.builtin.lineinfile:
+    path: /etc/snoopy.ini
+    search_string: ";output = socket:/var/run/socket-for-snoopy.sock"
+    line: "output = socket:/var/run/snoopy.sock"
+    state: present
+
+- name: Configure rsyslog
+  ansible.builtin.copy:
+    content: |
+      $AddUnixListenSocket /var/run/snoopy.sock
+      if ($programname contains "ogin") then {
+        action(type="omfile" file="/var/log/auth.log" fileownernum="104")
+        stop
+      }
+    dest: /etc/rsyslog.d/30-snoopy.conf
+    mode: 0644
+  notify:
+    - restart rsyslog
+
+- name: Enable snoopy
+  ansible.builtin.lineinfile:
+    path: /etc/ld.so.preload
+    line: /lib/x86_64-linux-gnu/libsnoopy.so
+    state: present
+    create: true
+    mode: 0644
+
+- name: Update logrotate general config
+  ansible.builtin.copy:
+    content: |
+      /var/log/syslog
+      {
+              rotate 7
+              daily
+              missingok
+              notifempty
+              delaycompress
+              compress
+              postrotate
+                      /usr/lib/rsyslog/rsyslog-rotate
+              endscript
+      }
+      /var/log/mail.info
+      /var/log/mail.warn
+      /var/log/mail.err
+      /var/log/mail.log
+      /var/log/daemon.log
+      /var/log/kern.log
+      /var/log/user.log
+      /var/log/lpr.log
+      /var/log/cron.log
+      /var/log/debug
+      /var/log/messages
+      {
+              rotate 4
+              weekly
+              missingok
+              notifempty
+              compress
+              delaycompress
+              sharedscripts
+              postrotate
+                      /usr/lib/rsyslog/rsyslog-rotate
+              endscript
+      }
+    dest: /etc/logrotate.d/rsyslog
+    mode: 0644
+
+- name: Update logrotate auth config
+  ansible.builtin.copy:
+    content: |
+      /var/log/auth.log
+      {
+              rotate 40
+              weekly
+              create 0640 {{ 'root' if ansible_facts.os_family == 'Debian' else 'syslog' }} adm
+              su root root
+              missingok
+              notifempty
+              compress
+              sharedscripts
+              postrotate
+                      /usr/lib/rsyslog/rsyslog-rotate
+              endscript
+      }
+    dest: /etc/logrotate.d/auth
+    mode: 0644

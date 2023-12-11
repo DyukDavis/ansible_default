@@ -1,0 +1,30 @@
+---
+
+network_open_port:
+  - port: 22
+    protocol: tcp
+    allow_ip:
+      - "192.168.0.0/16"
+  - port: 53   # bind
+    protocol: tcp
+    allow_ip:
+      - "10.0.0.0/8"
+  - port: 80   # bind
+    protocol: tcp
+
+network_forward_port:
+  - port: 9115    # blackbox_exporter
+    interface: "{{ network_interface }}"
+    protocol: tcp
+    allow_ip:
+      - "172.17.0.0/16"
+      - "127.0.0.1/32"
+
+network_raw_rules_new:
+  - table: nat    # openvpn
+    chain: "POSTROUTING"
+    rule: "-s 10.0.0.0/8 -o {{ network_interface }} -j MASQUERADE"
+  - chain: "FORWARD"    # openvpn to internet
+    rule: "-s 10.0.0.0/8 -o {{ network_interface }} -j ACCEPT"
+  - chain: "FORWARD"    # openvpn to other VPN
+    rule: "-s 10.30.0.0/16 -j ACCEPT"

@@ -1,0 +1,11 @@
+---
+
+- name: Setup hostname
+  hosts: linux
+  gather_facts: true
+  become: true
+
+  roles:
+  - role: bootstrap/hostname
+    tags:
+      - hostname

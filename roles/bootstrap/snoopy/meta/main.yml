@@ -1,0 +1,15 @@
+---
+
+galaxy_info:
+  author: Clickadu
+  namespace: bootstrap
+  description: Packages bootstrap role
+  company: Clickadu
+
+  license: BSD-3-Clause
+
+  min_ansible_version: "2.1"
+
+  galaxy_tags: []
+
+dependencies: []

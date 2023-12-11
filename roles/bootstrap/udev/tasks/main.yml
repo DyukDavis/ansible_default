@@ -1,0 +1,8 @@
+---
+
+- name: copy rules
+  ansible.builtin.template:
+    src: "{{ item }}.j2"
+    dest: "/etc/udev/rules.d/{{ item }}"
+  with_items:
+    - "80-net.rules"

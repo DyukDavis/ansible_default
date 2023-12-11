@@ -1,0 +1,51 @@
+---
+- name: Set options for all servers
+  hosts: linux
+  gather_facts: true
+  become: true
+  roles:
+    - role: bootstrap/grub-options
+      grub_options_kv:
+        - key: l1tf
+          value: "off"
+          state: present
+        - key: mds
+          value: "off"
+          state: present
+        - key: mitigations
+          value: "off"
+          state: present
+        - key: tsx_async_abort
+          value: "off"
+          state: present
+        - key: tsx
+          value: "on"
+          state: present
+      grub_options_keys:
+        - key: nopti
+          state: present
+        - key: noibrs
+          state: present
+        - key: noibpb
+          state: present
+        - key: nospectre_v1
+          state: present
+        - key: nospectre_v2
+          state: present
+        - key: nospec_store_bypass_disable
+          state: present
+        - key: no_stf_barrier
+          state: present
+
+- name: Disable THP
+  hosts:
+    - balancer_servers
+  gather_facts: true
+  become: true
+  roles:
+    - role: bootstrap/grub-options
+      grub_options_kv:
+        - key: transparent_hugepage
+          value: "never"
+          state: present
+      grub_options_keys: []

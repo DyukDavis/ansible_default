@@ -1,0 +1,8 @@
+---
+
+systemd_user_default_accounting_cpu: false
+systemd_user_default_accounting_block: false
+systemd_user_default_accounting_memory: false
+systemd_user_default_accounting_tasks: false
+systemd_user_default_accounting_io: false
+systemd_user_default_accounting_ip: false

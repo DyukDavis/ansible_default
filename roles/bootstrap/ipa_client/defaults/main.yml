@@ -1,0 +1,9 @@
+---
+
+service_state: present
+
+ipa_domain: adsrv.wtf
+ipa_user: "{{ lookup('keepersecurity.keeper_secrets_manager.keeper', uid='3GK38E0PQOt2Si9yyS9Mjw', field='login') }}"
+ipa_password: "{{ lookup('keepersecurity.keeper_secrets_manager.keeper', uid='3GK38E0PQOt2Si9yyS9Mjw', field='password') }}"
+ipa_server: ldap-1-eu.adsrv.wtf
+ipa_client_enabled: true

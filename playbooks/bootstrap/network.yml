@@ -1,0 +1,29 @@
+---
+
+- name: Setup network
+  hosts:
+    - linux
+  gather_facts: true
+  become: true
+  strategy: linear
+  vars:
+    ansible_ssh_args: "-C -o ControlMaster=no"
+  roles:
+    - role: bootstrap/iptables
+      tags:
+        - network
+        - firewall
+        - iptables
+
+    - role: bootstrap/dnsmasq
+      when: dnsmasq_setup
+      tags:
+        - dnsmasq
+        - network
+        - dns
+
+    - role: bootstrap/netplan
+      tags:
+        - network
+        - netplan
+        - dns

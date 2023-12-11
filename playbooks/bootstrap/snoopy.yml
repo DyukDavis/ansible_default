@@ -1,0 +1,9 @@
+# yamllint disable rule:line-length
+---
+
+- name: Install snoopy
+  hosts: linux
+  gather_facts: true
+  become: true
+  roles:
+    - role: bootstrap/snoopy

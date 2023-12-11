@@ -1,0 +1,51 @@
+---
+- name: Load OS-specific vars.
+  ansible.builtin.include_vars: "{{ lookup('first_found', params) }}"
+  vars:
+    params:
+      files:
+        - '{{ ansible_distribution }}{{ ansible_distribution_major_version }}.yml'
+        - '{{ ansible_distribution }}.yml'
+        - '{{ ansible_os_family }}.yml'
+        - main.yml
+      paths:
+        - 'vars'
+
+- name: Add podman apt key
+  ansible.builtin.apt_key:
+    url: "{{ podman_repo_key_info.url }}"
+    keyring: "{{ podman_repo_key_info.dest }}"
+  when: podman_install_repo
+
+- name: Install requirements
+  ansible.builtin.apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - gnupg2
+    update_cache: true
+  when: podman_install_repo
+
+- name: Add podman repository
+  ansible.builtin.apt_repository:
+    repo: "{{ podman_apt_repository }}"
+    state: present
+    filename: podman
+    update_cache: true
+  when: podman_install_repo
+
+- name: Install podman
+  ansible.builtin.apt:
+    name:
+      - podman
+      - containernetworking-plugins
+    update_cache: true
+    state: present
+
+- name: Add config containers.conf
+  ansible.builtin.template:
+    src: containers.conf.j2
+    dest: /etc/containers/containers.conf
+    owner: root
+    group: root
+    mode: 0644

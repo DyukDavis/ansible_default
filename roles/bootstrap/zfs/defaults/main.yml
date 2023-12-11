@@ -1,0 +1,8 @@
+---
+
+zfs_setup: false
+
+zfs_arc_max_gb: 16
+zfs_l2arc_noprefetch: 0
+zfs_l2arc_write_max_mb: 134
+zfs_l2arc_write_boost_mb: 134

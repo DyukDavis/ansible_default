@@ -1,0 +1,81 @@
+---
+{{ ansible_managed | comment }}
+
+
+cleanup: {{ network_iptables_cleanup | bool | lower}}
+allow_ping: {{ network_allow_ping | bool | lower}}
+null_packet_drop: {{ network_iptables_v2_null_packet_drop | bool | lower}}
+
+icmp_type: {{ network_icmp_type |default([]) |to_yaml }}
+
+invalid_drop_chains: {{ network_iptables_v2_invalid_drop_chains |default([]) |to_yaml }}
+related_chains: {{ network_iptables_v2_established_related_chains |default([]) |to_yaml }}
+
+{% if network_iptables_v2_chains_policy |default([]) |length > 0 %}
+chains_policy:
+{% for policy in network_iptables_v2_chains_policy %}
+  - chain: "{{ policy.chain }}"
+    policy: "{{ policy.policy }}"
+{% endfor %}
+{% else %}
+chains_policy: []
+{% endif %}
+
+
+{% if network_open_port |length > 0 %}
+open_port:
+{% for port in network_open_port %}
+  - port: {{ port.port }}
+{% if port.interface is defined %}
+    interface: "{{ port.interface }}"
+{% endif %}
+    protocol: "{{ port.protocol }}"
+{% if port.allow_ip |default([]) |length > 0 %}
+    allow_ip:
+{% for ip in port.allow_ip|flatten |unique |sort %}
+      - "{{ ip }}"
+{% endfor %}
+{% endif %}
+{% endfor %}
+{% endif %}
+
+{% if network_forward_port |length > 0 %}
+forward_port:
+{% for port in network_forward_port %}
+  - port: {{ port.port }}
+{% if port.interface is defined %}
+    interface: "{{ port.interface }}"
+{% endif %}
+    protocol: "{{ port.protocol }}"
+{% if port.allow_ip |default([]) |length > 0 %}
+    allow_ip:
+{% for ip in port.allow_ip|flatten |unique |sort %}
+      - "{{ ip }}"
+{% endfor %}
+{% endif %}
+{% endfor %}
+{% endif %}
+
+{% if network_allow_traffic |length > 0 %}
+allow_traffic:
+{% for rule in network_allow_traffic %}
+  - allow_ip:
+{% for ip in rule.allow_ip|flatten |unique |sort %}
+      - "{{ ip }}"
+{% endfor %}
+{% if rule.interface is defined %}
+    interface: "{{ rule.interface }}"
+{% endif %}
+{% endfor %}
+{% endif %}
+
+vrrp_interfaces: {{ network_vrrp_interfaces |to_yaml }}
+
+{% if network_raw_rules_new |length > 0 %}
+raw_rules:
+{% for rule in network_raw_rules_new %}
+  - chain: "{{ rule.chain }}"
+    table: "{{ rule.table |default('filter') }}"
+    rule: "{{ rule.rule }}"
+{% endfor %}
+{% endif %}

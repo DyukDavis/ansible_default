@@ -1,0 +1,12 @@
+---
+
+- name: Install podman
+  hosts: linux
+  gather_facts: true
+  become: true
+  strategy: linear
+
+  roles:
+    - role: bootstrap/podman
+      tags:
+        - podman

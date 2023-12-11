@@ -1,0 +1,11 @@
+---
+
+- name: Install cpufrequtils
+  hosts: linux
+  gather_facts: false
+  become: true
+
+  roles:
+    - role: bootstrap/cpufreq
+      tags:
+        - cpufreq

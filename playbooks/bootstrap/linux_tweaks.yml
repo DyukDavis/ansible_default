@@ -1,0 +1,8 @@
+---
+
+- name: Apply linux tweaks
+  hosts: linux
+  gather_facts: false
+  become: true
+  roles:
+    - bootstrap/linux_tweaks

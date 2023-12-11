@@ -1,0 +1,13 @@
+{{ ansible_managed | comment }}
+[Unit]
+Description=kernel kmsg to network
+Description=netconsole
+Requires=network.target
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/sbin/modprobe netconsole
+
+[Install]
+WantedBy=multi-user.target

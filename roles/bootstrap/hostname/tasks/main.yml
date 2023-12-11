@@ -1,0 +1,35 @@
+---
+
+- name: Install dbus for the hostname module
+  ansible.builtin.package:
+    name: dbus
+    state: present
+
+- name: Assign inventory name to unconfigured hostnames
+  ansible.builtin.hostname:
+    name: "{{ inventory_hostname }}"
+
+- name: Add fqdn name to /etc/hosts
+  ansible.builtin.blockinfile:
+    path: /etc/hosts
+    marker: "# {mark} FQDN NAME ANSIBLE MANAGED BLOCK"
+    state: "{{ hostname_state }}"
+    block: |
+      {{ hostname_hosts_ip }}  {{ inventory_hostname }}.{{ hostname_domain }} {{ inventory_hostname }}
+
+# - name: Add DNS A record "{{ inventory_hostname }}.{{ hostname_domain }}"
+#   amazon.aws.route53:
+#     state: "{{ hostname_state }}"
+#     zone: "{{ hostname_domain }}"
+#     record: "{{ inventory_hostname }}.{{ hostname_domain }}"
+#     type: A
+#     value: "{{ hostname_dns_ip }}"
+#     wait: true
+#     overwrite: true
+#     aws_access_key: "{{ hostname_aws_access_key }}"
+#     aws_secret_key: "{{ hostname_aws_secret_key }}"
+#   delegate_to: 127.0.0.1
+#   become: false
+#   when: hostname_dns_setup
+#   tags:
+#     - dns

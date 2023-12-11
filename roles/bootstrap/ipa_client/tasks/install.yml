@@ -1,0 +1,43 @@
+---
+
+- name: install packpages
+  ansible.builtin.apt:
+    name:
+      - freeipa-client
+      - sssd-tools
+    state: latest
+    update_cache: true
+
+- name: add machine to domain
+  ansible.builtin.command:
+    argv:
+      - 'ipa-client-install'
+      - '--domain={{ ipa_domain }}'
+      - '--hostname={{ inventory_hostname }}.adsrv.wtf'
+      - '-U'
+      - '-p'
+      - '{{ ipa_user }}'
+      - '-w'
+      - '{{ ipa_password }}'
+      - '--server={{ ipa_server }}'
+      - '--mkhomedir'
+      - '--force-join'
+      - '-N'
+    creates: /etc/ipa/default.conf
+
+- name: comment a line
+  ansible.builtin.lineinfile:
+    dest: /etc/sssd/sssd.conf
+    regexp: '^services =.*'
+    line: '#services = nss, pam, ssh, sudo'
+    state: present
+  when: ansible_facts['distribution_version'] is version('20.04', '>=')
+  notify:
+    - restart sssd
+
+- name: disable sss for service discovery
+  ansible.builtin.lineinfile:
+    dest: /etc/nsswitch.conf
+    regexp: '^services:(.*) sss(.*)'
+    line: 'services:\1\2'
+    backrefs: true

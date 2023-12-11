@@ -1,0 +1,9 @@
+---
+
+raid_hp_repo:
+  apt_key_url: "https://downloads.linux.hpe.com/SDR/hpePublicKey2048_key1.pub"
+  apt_key_id: "57446EFDE098E5C934B69C7DC208ADDE26C2B797"
+  repo: >
+    deb [signed-by=/usr/share/keyrings/hpe-publick.gpg]
+    http://downloads.linux.hpe.com/SDR/repo/mcp/Debian
+    bullseye/12.40 non-free

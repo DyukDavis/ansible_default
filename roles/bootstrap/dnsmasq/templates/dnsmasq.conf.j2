@@ -1,0 +1,41 @@
+{{ ansible_managed | comment }}
+
+{# Having a large local cache speeds up subsequent DNS queries significantly (from several hundred msec to around 25-30)
+You may need to adjust this depending on the amount of free space you have #}
+cache-size={{ dnsmask_cache_size }}
+
+{# We won't need dnsmasq to overwrite the system's resolv.conf, as we have our own cache. #}
+no-resolv
+
+{# Don't cache failed responces #}
+{% if not dnsmasq_neg_cache | bool %}
+no-negcache
+{% endif %}
+
+{# One of the most important directives!! For some reason Dnsmasq devs block name resolution with synchronous writes to the
+syslog. This directive will have Dnsmasq write log entries asynchronously, so fs writes don't bog down performance. #}
+log-async=25
+{% if dnsmask_enable_query_log | bool %}
+log-queries
+{% endif %}
+
+
+{# Send requests for all upstream dns servers #}
+all-servers
+dns-forward-max=4096
+
+{# Firstly, local (datasenter) dns servers #}
+{% for ip in dnsmask_local_dns_servers %}
+server={{ ip }}
+{% endfor %}
+
+{# Other global dns servers (google, cloudflare, etc) #}
+{% for ip in dnsmask_global_dns_servers %}
+server={{ ip }}
+{% endfor %}
+
+{# Binds Dnsmasq to the local #}
+interface=lo
+
+{# Bind on interface instead bind on ip #}
+bind-interfaces

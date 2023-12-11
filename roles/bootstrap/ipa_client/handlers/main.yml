@@ -1,0 +1,10 @@
+---
+
+- name: restart sssd
+  ansible.builtin.systemd:
+    state: restarted
+    name: "{{ item }}"
+  loop:
+    - sssd-nss.socket
+    - sssd-ssh.socket
+    - sssd-sudo.socket

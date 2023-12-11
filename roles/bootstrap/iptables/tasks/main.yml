@@ -1,0 +1,58 @@
+---
+
+- name: "Install iptables-persistent"
+  ansible.builtin.apt:
+    name: iptables-persistent
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+  tags:
+    - always
+
+- name: Download iptables-applyer
+  community.general.maven_artifact:
+    repository_url: 'https://nexus.adsrv.wtf/repository/artifacts'
+    group_id: "releases"
+    artifact_id: "iptables-applyer"
+    username: "{{ network_iptables_applyer_nexus_user }}"
+    password: "{{ network_iptables_applyer_nexus_passwd }}"
+    dest: "/usr/sbin/{{ network_iptables_applyer_bin }}"
+    version: "{{ network_iptables_applyer_version }}"
+    classifier: "binary"
+    extension: "bin"
+    checksum_alg: sha1
+    verify_checksum: download
+    mode: 0755
+    owner: root
+    group: root
+  tags:
+    - always
+
+- name: Apply iptables config
+  ansible.builtin.include_tasks: iptables_applyer.yml
+  tags:
+    - iptables
+  when:
+    - network_configure_iptables
+    - network_iptables_version == 3
+
+- name: Cleanup
+  ansible.builtin.include_tasks: iptables_cleanup.yml
+  tags:
+    - iptables
+  when:
+    - network_configure_iptables
+    - network_iptables_cleanup
+    - network_iptables_version == 3
+
+- name: Enable persistent service
+  ansible.builtin.systemd:
+    name: iptables.service
+    enabled: true
+  when: ansible_facts['distribution_version'] is version('20.04', '>=')
+
+- name: Enable persistent service
+  ansible.builtin.systemd:
+    name: netfilter-persistent.service
+    enabled: true
+  when: ansible_facts['distribution_version'] == "18.04"

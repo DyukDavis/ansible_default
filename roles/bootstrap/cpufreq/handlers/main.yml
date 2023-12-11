@@ -1,0 +1,8 @@
+---
+
+- name: restart cpufrequtils
+  ansible.builtin.systemd:
+    state: restarted
+    name: cpufrequtils
+    daemon_reload: true
+    enabled: true

@@ -1,0 +1,5 @@
+{{ ansible_managed |comment }}
+{% for rule in udev_net_rules %}
+# {{ rule.name }}
+{{ rule.command }}
+{% endfor %}

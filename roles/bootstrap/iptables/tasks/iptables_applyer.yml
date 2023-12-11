@@ -1,0 +1,32 @@
+---
+
+- name: Init git repo
+  ansible.builtin.command:
+    argv: ["git", "init"]
+    creates: "{{ network_iptables_applyer_config_dir }}/.git"
+    chdir: "{{ network_iptables_applyer_config_dir }}"
+
+- name: Copy iptables-applyer config
+  ansible.builtin.template:
+    src: applyer-config.yaml.j2
+    dest: "{{ network_iptables_applyer_config_dir }}/{{ network_iptables_applyer_config_name }}"
+    mode: 0660
+    owner: root
+    group: root
+
+- name: Run iptables-applyer
+  ansible.builtin.command:
+    cmd: "/usr/sbin/{{ network_iptables_applyer_bin }} \
+        \"{{ network_iptables_applyer_config_dir }}/{{ network_iptables_applyer_config_name }}\" \
+        -p={{ network_iptables_persistent | bool | lower }} -t 360s"
+  changed_when: false
+
+- name: Commit configs
+  ansible.builtin.command:
+    argv: "{{ item }}"
+    chdir: "{{ network_iptables_applyer_config_dir }}"
+  changed_when: false
+  loop:
+    - ["git", "add", "-A"]
+    - ["git", "commit", "-m", "Deploy: {{ ansible_date_time.iso8601 }} UTC", "--allow-empty"]
+    - ["git", "tag", "{{ ansible_date_time.iso8601 |replace(':', '') |replace('-', '') |replace('Z', '') }}"]

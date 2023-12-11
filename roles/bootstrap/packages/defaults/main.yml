@@ -1,0 +1,41 @@
+---
+# defaults file for packages
+packages_to_install:
+  - traceroute
+  - htop
+  - iotop
+  - atop
+  - nano
+  - mc
+  - net-tools
+  - curl
+  - wget
+  - iperf
+  - smartmontools
+  - net-tools
+  - unzip
+  - ca-certificates
+  - apt-transport-https
+  - software-properties-common
+  - pigz
+  - whois
+  - iperf3
+  - ncdu
+  - iotop
+  - sysstat
+  - hdparm
+  - iftop
+  - vim
+  - make
+  - python3-pip
+  - acl
+  - tmux
+  - libxml2-utils
+  - jq
+  - python3-lxml
+  - rasdaemon
+  - zstd
+  - git
+  - gnupg-agent
+  - gnupg2
+  - python-is-python3

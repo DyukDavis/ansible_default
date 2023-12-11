@@ -1,0 +1,11 @@
+---
+- name: Prepare
+  hosts: all
+  become: true
+  tasks:
+    - name: "Install deps"
+      ansible.builtin.apt:
+        name:
+          - gpg-agent
+          - rsyslog
+        update_cache: true

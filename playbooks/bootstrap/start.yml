@@ -1,0 +1,24 @@
+---
+
+- name: Setup firewall
+  hosts:
+    - group_graylog
+    - ldap-1-eu
+    - nexus-1-eu1
+  gather_facts: true
+  become: true
+  strategy: free     # noqa run-once[play]
+  roles:
+    - role: bootstrap/iptables
+      tags:
+        - network
+        - iptables
+
+- name: Deploy PHP FPM
+  hosts: group_php
+  gather_facts: true
+  become: true
+  roles:
+    - role: balancer
+      tags:
+        - nginx

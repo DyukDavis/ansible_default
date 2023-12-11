@@ -1,0 +1,27 @@
+---
+
+- name: Disable md checks
+  hosts: linux
+  gather_facts: true
+  become: true
+  tasks:
+    - name: check unit files
+      ansible.builtin.stat:
+        path: "/lib/systemd/system/{{ item }}"
+      register: units
+      with_items:
+        - "mdcheck_start.timer"
+        - "mdcheck_continue.timer"
+    - name: disable md check timers
+      ansible.builtin.systemd:
+        name: "{{ item.item }}"
+        state: stopped
+        enabled: false
+      when: item.stat.exists
+      with_items:
+        - "{{ units.results }}"
+
+    - name: remove cron file
+      ansible.builtin.file:
+        path: /etc/cron.d/mdadm
+        state: absent

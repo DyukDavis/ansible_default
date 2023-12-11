@@ -1,0 +1,11 @@
+[Unit]
+Description=Check cgroups count
+
+[Service]
+TimeoutSec=60
+Type=oneshot
+ExecStart=/usr/local/bin/cgroup_check.sh
+LimitNOFILE=500000
+
+[Install]
+WantedBy=multi-user.target

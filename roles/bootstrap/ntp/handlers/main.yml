@@ -1,0 +1,13 @@
+---
+
+- name: restart ntp systemd unit
+  ansible.builtin.systemd:
+    name: ntp
+    state: restarted
+    daemon_reload: true
+    enabled: true
+
+- name: disable timedatectl
+  ansible.builtin.command: "timedatectl set-ntp no"
+  when:
+    - ansible_distribution == "Ubuntu" and ansible_distribution_version == "18.04"

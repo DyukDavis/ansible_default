@@ -1,0 +1,35 @@
+---
+- name: Configure Ubuntu network
+  when: ansible_distribution == 'Ubuntu'
+  block:
+    - name: Find configs
+      ansible.builtin.find:
+        paths: /etc/netplan/
+        patterns: "*.yaml"
+      register: configs
+
+    - name: Update finded configs
+      ansible.builtin.include_tasks: update.yml
+      with_items:
+        - "{{ configs.files }}"
+      loop_control:
+        loop_var: file
+
+- name: Configure Debian network
+  when: ansible_distribution == 'Debian'
+  block:
+    - name: Remove nameservers from /etc/network/interfaces
+      ansible.builtin.lineinfile:
+        path: /etc/network/interfaces
+        state: absent
+        regexp: 'dns-nameserver (\d{1,3}.){3}\d{1,3}'
+
+
+- name: Configure resolve.conf
+  ansible.builtin.template:
+    src: resolv.conf.j2
+    dest: /etc/resolv.conf
+    owner: root
+    group: root
+    mode: 0644
+  when: (network_resolve_conf_static)

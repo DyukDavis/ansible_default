@@ -1,0 +1,12 @@
+---
+
+- name: Generating Netplan
+  ansible.builtin.command: netplan generate
+  changed_when: false
+
+# Do it async because connect may be flapped
+- name: Apply Netplan
+  ansible.builtin.command: netplan apply
+  async: 45
+  poll: 0
+  changed_when: false

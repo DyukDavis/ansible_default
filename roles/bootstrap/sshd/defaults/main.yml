@@ -1,0 +1,15 @@
+---
+
+sshd_ports:
+  - 22
+  - 222
+sshd_permitrootlogin: "no"
+sshd_loglevel: "INFO"
+sshd_logingracetime: 60
+sshd_strictmodes: "yes"
+sshd_pubkeyauthentication: "yes"
+sshd_passwordauthentication: "no"
+sshd_listen_ipv4: "0.0.0.0"
+sshd_listen_ipv6: "::"
+
+sshd_extra_options: []

@@ -1,0 +1,35 @@
+---
+# tasks file for dnsmasq
+
+- name: Install dnsmasq
+  ansible.builtin.apt:
+    name: dnsmasq
+    update_cache: true
+
+# Need to make free port 53
+- name: Stop and disable (systemd-resolved) service
+  ansible.builtin.systemd:
+    name: systemd-resolved
+    state: stopped
+    enabled: false
+  when: dnsmasq_service_resolved_disabled | bool
+
+- name: Copy dnsmasq config file
+  ansible.builtin.template:
+    backup: true
+    dest: /etc/dnsmasq.conf
+    src: dnsmasq.conf.j2
+    validate: dnsmasq --test --conf-file=%s
+    mode: 0640
+  notify: restart dnsmasq
+
+- name: Delete bad config.d file
+  ansible.builtin.file:
+    state: absent
+    path: /etc/dnsmasq.d/lxd
+
+- name: Make sure Dnsmasq is running
+  ansible.builtin.systemd:
+    name: dnsmasq
+    state: started
+    enabled: true

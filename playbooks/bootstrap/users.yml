@@ -1,0 +1,44 @@
+---
+
+- name: Setup users
+  hosts: linux
+  gather_facts: true
+  become: true
+  pre_tasks:
+    # For each user in avaliable_users list, the machine name is searched
+    # in groups listed in the access_to dictionary
+    - name: Compile deploy users array
+      ansible.builtin.set_fact:
+        users: "{{ users|default([]) + [item.0] }}"
+      when: inventory_hostname in groups[item.1]
+      with_subelements:
+        - "{{ avaliable_users }}"
+        - access_to
+
+  roles:
+    - role: bootstrap/ansible-users
+
+  tasks:
+    - name: Create /etc/sudoers.d
+      ansible.builtin.file:
+        state: directory
+        owner: root
+        group: root
+        mode: 0750
+        path: /etc/sudoers.d
+
+    - name: Alow gpoup sudo root commands withowt password
+      ansible.builtin.copy:
+        dest: "/etc/sudoers.d/root"
+        content: "%root   ALL=(ALL:ALL) NOPASSWD:   ALL"
+        mode: 0440
+    # - name: Change root password
+    #   ansible.builtin.user:
+    #     name: "root"
+    #     password: "{{ root_password |string |password_hash('sha512', 16776704 |random(seed=inventory_hostname) |string) }}"
+    - name: Enable datetime for command history for root user
+      ansible.builtin.blockinfile:
+        path: /root/.bashrc
+        marker: "# {mark} ANSIBLE CUSTOM BASHRC"
+        block: |
+          export HISTTIMEFORMAT='%F %T > '

@@ -1,0 +1,9 @@
+---
+
+- name: Configure fusioninventory-agent
+  hosts: linux
+  gather_facts: true
+  become: true
+
+  roles:
+    - role: bootstrap/fusioninventory-agent

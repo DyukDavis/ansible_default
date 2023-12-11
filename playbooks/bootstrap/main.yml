@@ -1,0 +1,38 @@
+---
+
+- import_playbook: users.yml
+- import_playbook: hostname.yml
+# only barymetal
+# - import_playbook: cpufreq.yml
+- import_playbook: packages.yml
+- import_playbook: upgrade.yml
+# - import_playbook: raid.yml
+- import_playbook: timezone.yml
+# - import_playbook: systemd.yml
+- import_playbook: sshd.yml
+- import_playbook: docker.yml
+# - import_playbook: podman.yml
+# - import_playbook: docker-registry.yml
+# Проверить наличие iptables - скорректировать файл iptables / бэкап файла netplan и iptables
+# - import_playbook: network.yml
+- import_playbook: ntp.yml
+- import_playbook: tune2fs.yml
+- import_playbook: snoopy.yml
+- import_playbook: kernel.yml
+# - import_playbook: fusioninventory-agent.yml
+- import_playbook: kernel-modules.yml
+# - import_playbook: zfs.yml
+# Требует оптимизации
+# - import_playbook: sysctl.yml
+# Применяется на group_balancers_lw
+# - import_playbook: udev.yml
+# - import_playbook: mdadm.yml
+# Проверить необходимость отулюяения файла подкачки
+# - import_playbook: disable_swap.yml
+# Уточнить необходимость настройки grub
+# - import_playbook: spectre.yml
+# Нужно ли это для виртуальных серверов? (возможно)
+# - import_playbook: netconsole.yml
+# - import_playbook: ldap.yml
+# Перекраска консоли сервера (в зависимости от окружения - прод или стейдж)
+# - import_playbook: linux_tweaks.yml

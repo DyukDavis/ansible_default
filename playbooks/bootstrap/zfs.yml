@@ -1,0 +1,8 @@
+---
+
+- name: Setup zfs
+  hosts: linux
+  gather_facts: true
+  become: true
+  roles:
+    - role: bootstrap/zfs

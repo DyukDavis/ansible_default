@@ -1,0 +1,6 @@
+---
+- name: Install ipa client
+  hosts: linux
+  become: true
+  roles:
+    - role: bootstrap/ipa_client

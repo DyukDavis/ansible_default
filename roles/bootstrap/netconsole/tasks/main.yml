@@ -1,0 +1,51 @@
+---
+
+- name: Get GW mac address
+  ansible.builtin.shell: |
+    set -o pipefail
+    arp -na '{{ansible_default_ipv4["gateway"]}}' |grep -oE "([a-f0-9]{2}[:]*){6}"
+  args:
+    executable: /bin/bash
+  register: gw_mac
+
+- name: Enable module
+  ansible.builtin.lineinfile:
+    path: /etc/modules
+    regexp: '^netconsole$'
+    line: netconsole
+
+- name: Copy config
+  ansible.builtin.copy:
+    content: "options netconsole netconsole={{ netconsole_local_port }}@{{ ansible_default_ipv4['address'] }}/{{ ansible_default_ipv4['interface'] }},{{ netconsole_remote_port }}@{{ netconsole_remote_host }}/{{ gw_mac.stdout }}"
+    dest: "/etc/modprobe.d/netconsole.conf"
+    owner: root
+    group: root
+    mode: 0644
+  register: status
+
+- name: Unload module
+  community.general.modprobe:
+    name: netconsole
+    state: absent
+  when: status.changed
+
+- name: Load module
+  community.general.modprobe:
+    name: netconsole
+    state: present
+    params: "netconsole={{ netconsole_local_port }}@{{ ansible_default_ipv4['address'] }}/{{ ansible_default_ipv4['interface'] }},{{ netconsole_remote_port }}@{{ netconsole_remote_host }}/{{ gw_mac.stdout }}"
+
+- name: Copy service
+  ansible.builtin.template:
+    src: netconsole.j2
+    dest: /etc/systemd/system/netconsole.service
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Enable service netconsole
+  ansible.builtin.systemd:
+    name: netconsole.service
+    state: started
+    enabled: true
+    daemon_reload: true

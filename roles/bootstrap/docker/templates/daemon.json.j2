@@ -1,0 +1,16 @@
+{
+  "log-driver": "json-file",
+  "storage-driver": "{{ docker_storage_driver }}",
+  "log-opts": {
+    "max-size": "{{ docker_log_max_size }}",
+    "max-file": "{{ docker_log_max_file }}"
+  },
+  "live-restore": {{ docker_live_restore }},
+  "experimental": {{ docker_enable_expiremental }},
+  "builder": {
+    "gc": {
+      "enabled": true,
+      "defaultKeepStorage": "30GB"
+    }
+  }
+}

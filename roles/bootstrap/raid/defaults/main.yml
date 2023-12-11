@@ -1,0 +1,6 @@
+---
+# defaults file for raid
+raid_hp_repo:
+  apt_key:
+  apt_key_id:
+  repo:

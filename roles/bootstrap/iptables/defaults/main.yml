@@ -1,0 +1,51 @@
+---
+
+network_configure_iptables: true
+network_iptables_debug: false
+network_iptables_persistent: true
+
+# Включить после полной раскатки на все прод хосты
+network_iptables_version: 3
+
+network_iptables_cleanup: false
+
+## iptables v2 config ##
+network_iptables_v2_null_packet_drop: true
+network_iptables_v2_invalid_drop_chains:
+  - INPUT
+  - FORWARD
+
+network_iptables_v2_established_related_chains:
+  - INPUT
+  - FORWARD
+
+network_iptables_v2_chains_policy:
+  - chain: INPUT
+    policy: DROP
+  - chain: FORWARD
+    policy: DROP
+  - chain: OUTPUT
+    policy: ACCEPT
+
+## iptables shared config ##
+network_allow_ping: true
+network_interface: "{{ ansible_default_ipv4.interface }}"
+network_icmp_type:
+  - echo-reply
+  - destination-unreachable
+  - time-exceeded
+  - echo-request
+
+network_open_port: []
+network_forward_port: []
+network_allow_traffic: []
+network_vrrp_interfaces: []
+network_raw_rules: []
+network_raw_rules_new: []
+
+network_iptables_applyer_config_dir: /etc/iptables
+network_iptables_applyer_config_name: rules.yml
+# network_iptables_applyer_nexus_user: "{{ click_nexus_artifacts_user }}"
+# network_iptables_applyer_nexus_passwd: "{{ click_nexus_artifacts_passwd }}"
+network_iptables_applyer_bin: iptables-applyer
+# network_iptables_applyer_version: 0.0.12

@@ -1,0 +1,20 @@
+---
+
+- name: Install ntp
+  ansible.builtin.apt:
+    name: ntp
+    update_cache: true
+  notify:
+    - disable timedatectl
+    - restart ntp systemd unit
+
+- name: Copy ntp config
+  ansible.builtin.template:
+    src: ntp.conf.j2
+    dest: /etc/ntp.conf
+    mode: '0644'
+    owner: root
+    group: root
+  notify:
+    - disable timedatectl
+    - restart ntp systemd unit

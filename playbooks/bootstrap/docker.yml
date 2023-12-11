@@ -1,0 +1,12 @@
+---
+
+- name: Install docker
+  hosts: linux
+  gather_facts: true
+  become: true
+  strategy: linear
+
+  roles:
+    - role: bootstrap/docker
+      tags:
+        - docker

@@ -1,0 +1,34 @@
+{{ ansible_managed | comment }}
+[Unit]
+Description=Postgresql {{ postgres_instance_name }}
+After=docker.service
+Requires=docker.service
+
+[Service]
+EnvironmentFile=-/etc/environment
+ExecStart=/usr/bin/docker run \
+  --rm \
+  --shm-size=256MB \
+  --name={{ postgres_instance_name }} \
+  {# --oom-score-adj="{{ _postgres_oom_score, default=-100 }}" \ #}
+  --env POSTGRES_USER={{ postgres_user }} \
+  --env POSTGRES_PASSWORD={{ postgres_password }} \
+  --env POSTGRES_DATABASE={{ postgres_database }} \
+  --network={{ postgres_container_network }} \
+{% if postgres_container_network != 'host' -%}
+  --publish {{ postgres_port }}:5432 \
+{% endif -%}
+{% for volume_def in postgres_container_mounts %}
+  --volume {{ volume_def }} \
+{% endfor %}
+  --tmpfs /var/run/tmp/postgres/:rw,noexec,nosuid \
+  "{{ postgres_container_image_name }}:{{ postgres_container_image_version }}"
+ExecStop=-/usr/bin/docker stop --time 120 {{ postgres_instance_name }}
+KillMode=none
+Restart=always
+RestartSec=120s
+TimeoutStartSec=120
+TimeoutStopSec=120
+
+[Install]
+WantedBy=multi-user.target

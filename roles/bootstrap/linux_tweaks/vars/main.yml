@@ -1,0 +1,9 @@
+---
+
+_color_reset: '\[\e[0m\]'
+
+_color_font_black: '\[\e[1;30m\]'
+
+_color_background_red: '\[\e[48;5;213m\]'
+_color_background_yellow: '\[\e[48;5;226m\]'
+_color_background_blue: '\[\e[48;5;039m\]'

@@ -1,0 +1,8 @@
+{{ ansible_managed | comment }}
+
+# reference https://github.com/containers/common/blob/main/docs/containers.conf.5.md
+
+[containers]
+
+log_driver="{{ podman_log_driver }}"
+netns="host"

@@ -1,0 +1,16 @@
+---
+
+postgres_enabled: true
+postgres_directory: "/opt/postgres"
+postgres_container_data_dir: "{{ postgres_directory }}/data"
+postgres_container_image_name: "postgres"
+postgres_container_image_version: "16-alpine"
+postgres_instance_name: "postgres-16"
+postgres_port: 5432
+postgres_user: root
+postgres_password: root
+postgres_database: "postgres"
+postgres_container_network: "host"
+
+postgres_container_mounts:
+  - "{{ postgres_container_data_dir }}:/var/lib/postgresql/data:rw"

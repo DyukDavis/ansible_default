@@ -1,0 +1,11 @@
+---
+
+docker_repo_key_info:
+  url: "https://download.docker.com/linux/ubuntu/gpg"
+  repo_keys: "9DC858229FC7DD38854AE2D88D81803C0EBFCD88"
+  dest: /usr/share/keyrings/docker-ce.gpg
+
+docker_apt_repository: >
+  deb [arch=amd64 signed-by={{ docker_repo_key_info.dest }}]
+  https://download.docker.com/linux/ubuntu
+  {{ ansible_distribution_release | lower }} stable

@@ -1,0 +1,46 @@
+---
+
+avaliable_users:
+  - username: mindyukov
+    name: Mikhail Indyukov
+    groups:
+      - root
+      - docker
+    ssh_key:
+      - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINbilv5QpUZu3a0RA8BJH5eYd0xOU0IcckgvW4673MKn mindyukov@dyuk-nox"
+    update_password: on_create
+    access_to:
+      - all
+  - username: dvengerov
+    name: Dmitry Vengerov
+    groups:
+      - root
+      - docker
+    ssh_key:
+      - "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC1yfJUQ0jXLCql14juhzX8Qeas113nnodN6LFjicoJbPJ7QrneiBJWD7j8UpBnaPEP\
+        74kBfEHOo4jHe+nHU4FlGrchiSbDOUUThjVGZ/7Fuh1nBJk5PfPoA515CPW6kSn/dgJTLz8LqhN4JB08+wR3xLtfmI4y2lq1ojUHSO6YA\
+        G6iQqFRxr6ROvwdhXXiPS2OEy+szm++59Srk91Uxc+HShuppR4N3rHTdzdk55itkyQO1w3vXUsYVOSR2SRCfBoMNmqtKtdsAp230tAFYz\
+        wkX0CYUGgJPlOfwzCgGQtdI1BCCwY0VxDIGLA94wy5o7Q0/6SuUhOYuCAjsoQ5NLQfPILe3hvY5i0U60L6gTV7d+hExNH3CbyfRxLngB+\
+        CfdlKvDzbQdfnXGTUO6ucxN7TCuwtOBIQt36HVLO4lc9nALIMfybXHGdLvJpMn5HNSQq52jzmF4g7VxeqqjQtqXzqjsDzAKfJhCHf6ZCP\
+        BC2JJKioeuK4I47WTh4M5twAVqU= dmitryvengerov@MacBook-Pro"
+    update_password: on_create
+    access_to:
+      - all
+  - username: lenfer
+    name: lenfer.spb
+    groups:
+      - root
+      - docker
+    ssh_key:
+      - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIBEKpxCVPxrzPKlirlwLj22NarQ8RRloY19RQXiHNhr lenfer.spb@gmail.com"
+    update_password: on_create
+    access_to:
+      - all
+
+groups_to_create:
+  - name: docker
+
+users_deleted:
+  - username: ubuntu
+    force: true
+    remove: true

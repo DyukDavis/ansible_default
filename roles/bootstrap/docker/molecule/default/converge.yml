@@ -1,0 +1,30 @@
+---
+- name: Install dependencies
+  hosts: all
+  gather_facts: false
+  become: true
+  pre_tasks:
+    - name: Install python
+      ansible.builtin.raw: 'command -v "python3" || apt-get update && apt-get install -y python3'
+      args:
+        executable: /bin/bash
+      changed_when: false
+
+- name: Fixes
+  hosts: all
+  gather_facts: false
+  become: true
+  pre_tasks:
+    - name: Remove python3-openssl
+      ansible.builtin.raw: 'apt-get remove -y python3-openssl'
+      args:
+        executable: /bin/bash
+      changed_when: false
+
+- name: Converge
+  hosts: all
+  become: true
+  tasks:
+    - name: "Include docker"
+      ansible.builtin.include_role:
+        name: "docker"

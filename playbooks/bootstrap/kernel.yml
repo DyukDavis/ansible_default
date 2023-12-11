@@ -1,0 +1,29 @@
+---
+
+- name: Upgrade kernel
+  hosts: linux
+  gather_facts: true
+  become: true
+
+  tasks:
+    - name: Install latest kernel
+      ansible.builtin.apt:
+        name: linux-generic-hwe-{{ ansible_distribution_version | lower }}
+        install_recommends: true
+        update_cache: true
+      when: ansible_distribution == "Ubuntu"
+
+    - name: Install kernel ppa script
+      ansible.builtin.get_url:
+        url: "https://raw.githubusercontent.com/pimlie/ubuntu-mainline-kernel.sh/bdb32e32eb1b237302d789e3203c3e06d9b0d300/ubuntu-mainline-kernel.sh"
+        dest: "/usr/local/bin/ubuntu-mainline-kernel"
+        checksum: "sha256:2d94fe33597d3119472b3617fda986cad886d5c2ade946d7d680e4d45b71059c"
+        mode: 0755
+        owner: root
+      when: ansible_distribution == "Ubuntu"
+
+    - name: Install PPA kernel
+      ansible.builtin.shell: ubuntu-mainline-kernel -i "{{ bootstrap_ppa_kernel_version }}"
+      when:
+        - bootstrap_ppa_kernel_version is defined
+        - ansible_distribution == "Ubuntu"

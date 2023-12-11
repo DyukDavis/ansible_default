@@ -1,0 +1,16 @@
+---
+
+- name: Set sysctl param
+  ansible.posix.sysctl:
+    name: "{{ item.key }}"
+    value: "{{ item.value }}"
+    sysctl_set: true
+  with_items: "{{ sysctl_params | dict2items }}"
+  when: item.value is not none
+
+- name: Remove sysctl param
+  ansible.posix.sysctl:
+    name: "{{ item.key }}"
+    state: absent
+  with_items: "{{ sysctl_params | dict2items }}"
+  when: item.value is none

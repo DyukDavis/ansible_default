@@ -1,0 +1,9 @@
+---
+- name: Setup Iptables
+  hosts:
+    - all
+  become: true
+  tasks:
+    - name: "Include iptables"
+      ansible.builtin.include_role:
+        name: "iptables"

@@ -1,0 +1,31 @@
+---
+
+network_raw_rules_new:
+  - chain: PREROUTING
+    table: raw
+    rule: "-m tcp -p tcp --dport 443 -j NOTRACK"
+  - chain: PREROUTING
+    table: raw
+    rule: "-m tcp -p tcp --dport 80 -j NOTRACK"
+  - chain: OUTPUT
+    table: raw
+    rule: "-m tcp -p tcp --sport 443 -j NOTRACK"
+  - chain: OUTPUT
+    table: raw
+    rule: "-m tcp -p tcp --sport 80 -j NOTRACK"
+
+network_open_port:
+  - port: 22
+    interface: "{{ network_interface }}"
+    protocol: tcp
+    # ToDo - требуется список IP - с которых можно будет логиниться на данный сервер
+    # allow_ip:
+    #   - "{{ ip_acl_admin }}"
+    #   - "{{ groups['balancer_servers'] | map('extract', hostvars, ['ansible_host']) | list }}"
+    #   - "{{ groups['group_jenkins_deploy'] | map('extract', hostvars, ['ansible_host']) | list }}"
+  - port: 80
+    interface: "{{ network_interface }}"
+    protocol: tcp
+  - port: 443
+    interface: "{{ network_interface }}"
+    protocol: tcp

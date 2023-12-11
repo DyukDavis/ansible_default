@@ -1,0 +1,15 @@
+---
+
+- ansible.builtin.include_tasks: install.yml
+  when:
+    - (service_state == "present")
+    - (ipa_client_enabled |bool)
+  tags:
+    - install
+
+- ansible.builtin.include_tasks: uninstall.yml
+  when:
+    - (service_state == "absent")
+    - (ipa_client_enabled |bool)
+  tags:
+    - uninstall

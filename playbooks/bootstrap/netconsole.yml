@@ -1,0 +1,10 @@
+---
+- name: Configure netconsole
+  hosts: linux
+  gather_facts: true
+  become: true
+  strategy: linear
+  roles:
+    - role: bootstrap/netconsole
+      netconsole_remote_host: "{{ graylog_input_ip }}"
+      netconsole_remote_port: 12514

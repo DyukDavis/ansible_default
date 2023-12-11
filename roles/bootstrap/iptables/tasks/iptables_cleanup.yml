@@ -1,0 +1,31 @@
+---
+- name: Set default policy to allow
+  ansible.builtin.iptables:
+    chain: "{{ item.chain }}"
+    policy: "{{ item.policy }}"
+  with_items:
+    - chain: INPUT
+      policy: ACCEPT
+    - chain: FORWARD
+      policy: ACCEPT
+    - chain: OUTPUT
+      policy: ACCEPT
+
+- name: Flush chains
+  ansible.builtin.shell: iptables -w 5 -t {{ item }} -F && iptables -t {{ item }} -X
+  with_items:
+    - "filter"
+    - "nat"
+    - "mangle"
+
+- name: Get service facts
+  ansible.builtin.service_facts:
+
+- name: Restart systemd units
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    state: restarted
+  when: ansible_facts.services[item] is defined and ansible_facts.services[item]["state"] == "running"
+  with_items:
+    - docker.service
+    - libvirtd.service

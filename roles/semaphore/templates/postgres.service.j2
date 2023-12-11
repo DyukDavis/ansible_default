@@ -1,0 +1,31 @@
+{{ ansible_managed | comment }}
+[Unit]
+Description=semaphoreql {{ semaphore_instance_name }}
+After=docker.service
+Requires=docker.service
+
+[Service]
+EnvironmentFile=-/etc/environment
+ExecStart=/usr/bin/docker run \
+  --rm \
+  --shm-size=256MB \
+  --name={{ semaphore_instance_name }} \
+  {# --oom-score-adj="{{ _semaphore_oom_score, default=-100 }}" \ #}
+  {% for k, v in semaphore_vars.items() -%}
+  -e {{ k }}="{{ v }}" \
+  {% endfor -%}
+  --network={{ semaphore_container_network }} \
+{% if semaphore_container_network != 'host' -%}
+  --publish {{ semaphore_port }}:5432 \
+{% endif -%}
+  --tmpfs /var/run/tmp/semaphore/:rw,noexec,nosuid \
+  "{{ semaphore_container_image_name }}:{{ semaphore_container_image_version }}"
+ExecStop=-/usr/bin/docker stop --time 120 {{ semaphore_instance_name }}
+KillMode=none
+Restart=always
+RestartSec=120s
+TimeoutStartSec=120
+TimeoutStopSec=120
+
+[Install]
+WantedBy=multi-user.target

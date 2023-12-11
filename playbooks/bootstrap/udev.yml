@@ -1,0 +1,8 @@
+---
+
+- name: Setup udev rules
+  hosts: linux
+  gather_facts: true
+  become: true
+  roles:
+    - role: bootstrap/udev

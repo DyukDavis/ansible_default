@@ -1,0 +1,24 @@
+---
+
+- name: Install cpufrequtils
+  ansible.builtin.apt:
+    name: cpufrequtils
+    state: present
+    update_cache: true
+
+- name: Copy cpufrequtils config
+  ansible.builtin.template:
+    src: cpufrequtils.j2
+    dest: /etc/default/cpufrequtils
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - restart cpufrequtils
+
+- name: Stop ondemand service
+  ansible.builtin.systemd:
+    state: stopped
+    name: ondemand
+    enabled: false
+  when: ansible_distribution == 'Ubuntu' and ansible_distribution_version in ['18.04', '20.04']

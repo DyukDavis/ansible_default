@@ -1,0 +1,15 @@
+---
+
+service_state: "present"
+
+fusioninventory_packages_url:
+  - "https://github.com/fusioninventory/fusioninventory-agent/releases/download/2.6/fusioninventory-agent_2.6-1_all.deb"
+  - "https://github.com/fusioninventory/fusioninventory-agent/releases/download/2.6/fusioninventory-agent-task-collect_2.6-1_all.deb"
+  - "https://github.com/fusioninventory/fusioninventory-agent/releases/download/2.6/fusioninventory-agent-task-network_2.6-1_all.deb"
+
+fusioninventory_packages_distro:
+  - "fusioninventory-agent"
+  - "fusioninventory-agent-task-collect"
+  - "fusioninventory-agent-task-network"
+
+fusioninventory_glpi_url: "https://glpi.adsrv.wtf/plugins/fusioninventory/"

@@ -1,0 +1,8 @@
+---
+- name: leave freeipa domain
+  ansible.builtin.shell: ipa-client-install --uninstall
+
+- name: Remove IPA client package
+  ansible.builtin.package:
+    name: freeipa-client
+    state: absent

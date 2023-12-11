@@ -1,0 +1,11 @@
+---
+# defaults file for dnsmasq
+
+dnsmask_cache_size: 10000
+dnsmask_global_dns_servers:
+  - 8.8.8.8
+  - 1.1.1.1
+dnsmask_local_dns_servers: []
+dnsmasq_service_resolved_disabled: false
+dnsmask_enable_query_log: false
+dnsmasq_neg_cache: true

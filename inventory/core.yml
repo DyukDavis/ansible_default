@@ -1,0 +1,8 @@
+---
+all:
+  children:
+    linux:
+      children:
+        group_ansible_server:
+          hosts:
+            ansible-bastion-1:

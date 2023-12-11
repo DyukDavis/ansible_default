@@ -1,0 +1,5 @@
+{{ ansible_managed | comment }}
+
+{% for  var in  _hosts_records | dict2items %}
+{{ var.key }} {{ var.value | join(' ') }}
+{% endfor %}

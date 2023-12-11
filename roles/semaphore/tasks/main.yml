@@ -1,0 +1,36 @@
+---
+
+- name: Create dirs
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+  with_items:
+    - "{{ postgres_directory }}"
+    - "{{ postgres_container_data_dir }}"
+
+- name: Pull postgres image
+  community.docker.docker_image:
+    name: "{{ postgres_container_image_name }}:{{ postgres_container_image_version }}"
+    source: pull
+    state: present
+
+- name: Copy unit
+  ansible.builtin.template:
+    src: "postgres.service.j2"
+    dest: "/etc/systemd/system/{{ postgres_instance_name }}.service"
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - restart service
+
+- name: Start service
+  ansible.builtin.systemd:
+    state: started
+    enabled: true
+    name: "{{ postgres_instance_name }}.service"
+    daemon_reload: true
+  when: postgres_enabled

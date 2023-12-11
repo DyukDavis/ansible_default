@@ -1,0 +1,11 @@
+---
+
+- ansible.builtin.include_tasks: install.yml
+  when: service_state == "present"
+  tags:
+    - install
+
+- ansible.builtin.include_tasks: uninstall.yml
+  when: service_state == "absent"
+  tags:
+    - uninstall

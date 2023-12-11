@@ -1,0 +1,10 @@
+---
+
+podman_repo_key_info:
+  url: 'https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/Debian_Testing/Release.key'
+  dest: /usr/share/keyrings/podman.gpg
+
+podman_apt_repository: >
+  deb [signed-by=/usr/share/keyrings/podman.gpg]
+  https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/Debian_12/ /
+podman_install_repo: true

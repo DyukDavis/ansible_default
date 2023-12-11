@@ -1,0 +1,25 @@
+---
+
+- name: Deploy postgres for semaphore
+  hosts: ansible-bastion-1
+  gather_facts: true
+  become: true
+  vars:
+    postgres_instance_name: "semaphore-postgres"
+    postgres_container_image_version: "14"
+    postgres_user: "semaphore"
+    postgres_password: "semaphore"
+    postgres_database: "semaphore"
+  roles:
+    - role: postgres
+      tags:
+        - pg
+
+- name: Deploy semaphore
+  hosts: ansible-bastion-1
+  gather_facts: true
+  become: true
+  roles:
+    - role: semaphore
+      tags:
+        - semaphore

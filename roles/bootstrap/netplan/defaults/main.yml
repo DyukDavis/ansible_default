@@ -1,0 +1,8 @@
+---
+network_dns_servers:
+  - '8.8.8.8'
+  - '1.1.1.1'
+
+network_resolve_conf_static: true
+network_resolve_conf_search: []
+network_resolve_conf_options: ['timeout:2', 'attempts:5', 'single-request']

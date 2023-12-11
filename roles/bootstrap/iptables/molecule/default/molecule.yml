@@ -1,0 +1,42 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: vagrant
+  provider:
+    name: libvirt
+platforms:
+  - name: iptables
+    box: generic/ubuntu2204
+    box_version: 4.2.16
+    memory: 2048
+    cpus: 2
+    provider_raw_config_args:
+      - "disk_driver :cache => 'unsafe'"
+      - "disk_bus = 'virtio'"
+      - "random_hostname = true"
+      - "cpu_mode = 'host-passthrough'"
+      - "driver = 'kvm'"
+provisioner:
+  name: ansible
+  options:
+    D: true
+  inventory:
+    links:
+      group_vars: ../../../../../inventory/group_vars
+      host_vars: ./host_vars
+  playbooks:
+    prepare: prepare.yml
+  config_options:
+    defaults:
+      interpreter_python: auto_silent
+      callbacks_enabled: profile_tasks, timer, yaml
+      stdout_callback: yaml
+      bin_ansible_callbacks: true
+    ssh_connection:
+      pipelining: false
+verifier:
+  name: testinfra
+  options:
+    sudo: true
+    vvv: true

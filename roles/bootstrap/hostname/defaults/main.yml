@@ -1,0 +1,9 @@
+---
+
+hostname_domain: "mydomain.name"
+hostname_hosts_ip: "{{ ansible_host }}"
+hostname_state: "present"
+# hostname_dns_setup: true
+# hostname_dns_ip: "{{ ansible_host }}"
+# hostname_aws_access_key: "{{ aws_main_ops.key }}"
+# hostname_aws_secret_key: "{{ aws_main_ops.secret }}"

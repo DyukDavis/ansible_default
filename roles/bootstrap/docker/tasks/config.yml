@@ -1,0 +1,11 @@
+---
+
+- name: Copy docker config
+  ansible.builtin.template:
+    src: daemon.json.j2
+    dest: /etc/docker/daemon.json
+    owner: root
+    group: root
+    mode: 0600
+    validate: dockerd --validate --config-file=%s
+  notify: Restart docker service

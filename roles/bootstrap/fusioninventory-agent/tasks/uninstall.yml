@@ -1,0 +1,11 @@
+---
+
+- name: Remove fusioninventory
+  ansible.builtin.apt:
+    name: fusioninventory-agent
+    state: absent
+
+- name: Remove fusioninventory dirs
+  ansible.builtin.file:
+    path: "/etc/fusioninventory"
+    state: absent

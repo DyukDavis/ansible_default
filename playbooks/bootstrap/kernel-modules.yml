@@ -1,0 +1,19 @@
+---
+
+- name: Setup kernel modules
+  hosts: linux
+  gather_facts: false
+  become: true
+
+  tasks:
+    - name: Load nf_conntrack module
+      community.general.modprobe:
+        name: nf_conntrack
+        state: present
+
+    - name: Write /etc/modules
+      ansible.builtin.blockinfile:
+        path: /etc/modules
+        marker: "# {mark} MODULES ANSIBLE MANAGED BLOCK"
+        block: |
+          nf_conntrack
