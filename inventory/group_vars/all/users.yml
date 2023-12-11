@@ -36,11 +36,21 @@ avaliable_users:
     update_password: on_create
     access_to:
       - all
+  - username: ansibleuser
+    name: ansible user
+    groups:
+      - root
+      - docker
+    ssh_key:
+      - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJ6GGbtOl08FjmCVR9t+F7o1AML0xWnvpnHBhiSgNnNY ansibleuser"
+    update_password: on_create
+    access_to:
+      - all
 
 groups_to_create:
   - name: docker
 
-users_deleted:
-  - username: ubuntu
-    force: true
-    remove: true
+users_deleted: []
+#  - username: ubuntu
+#    force: true
+#    remove: true
