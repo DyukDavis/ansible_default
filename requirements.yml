@@ -1,0 +1,28 @@
+# yamllint disable rule:line-length
+---
+
+collections:
+  - name: community.mysql
+    version: 3.7.2
+  - name: community.postgresql
+    version: 3.2.0
+  - name: kubernetes.core
+    version: 2.4.0
+  - name: community.general
+    version: 7.4.0
+  - name: community.docker
+    version: 3.4.9
+  - name: community.libvirt
+    version: 1.3.0
+  - name: ansible.utils
+    version: 2.11.0
+  - name: keepersecurity.keeper_secrets_manager
+    version: 1.2.1
+  - name: containers.podman
+    version: 1.10.3
+  - name: community.aws
+    version: 6.3.0
+  - name: ansible.posix
+    version: 1.5.2
+  - name: community.crypto
+    version: 2.15.1
