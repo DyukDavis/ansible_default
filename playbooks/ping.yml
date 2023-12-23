@@ -1,0 +1,11 @@
+---
+
+- name: Check connect to hosts
+  hosts: all
+  gather_facts: true
+  become: true
+
+  tasks:
+    - name: Check connect to hosts
+      ansible.builtin.ping:
+
