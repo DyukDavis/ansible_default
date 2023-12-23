@@ -2,7 +2,7 @@
 
 - name: Setup users
   hosts: linux
-  gather_facts: true
+  ansible.builtin.gather_facts: true
   become: true
   pre_tasks:
     # For each user in avaliable_users list, the machine name is searched
